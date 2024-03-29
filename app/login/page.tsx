@@ -1,14 +1,15 @@
 "use client"
-import FormButton from "@/components/form-btn";
-import FormInput from "@/components/form-input";
+import Button from "@/components/button";
+import Input from "@/components/input";
 import SocialLogin from "@/components/social-login";
 import { redirect } from "next/navigation";
 import { useFormState } from "react-dom";
-import { handleForm } from "./actions";
+import { login } from "./actions";
+import { PASSWORD_MIN_LENGTH } from "@/lib/contants";
 
 
 export default function LoginPage() {
-    const [state, action] = useFormState(handleForm, null as any);
+    const [state, dispatch] = useFormState(login, null as any);
 
     return (
         <div className="flex flex-col gap-10 py-8 px-6">
@@ -16,21 +17,24 @@ export default function LoginPage() {
                 <h1 className="text-2xl">LOGIN</h1>
                 <h2 className="text-xl">Log in with email and password</h2 >
             </div>
-            <form action={action} className="flex flex-col gap-3">
-                <FormInput
+            <form action={dispatch} className="flex flex-col gap-3">
+                <Input
                     type="email"
                     name="email"
                     placeholder="Email"
                     required
+                    errors={state?.fieldErrors.email}
                 />
-                <FormInput
+                <Input
                     type="password"
                     name="password"
                     placeholder="Password"
                     required
+                    minLength={PASSWORD_MIN_LENGTH}
+                    errors={state?.fieldErrors.password}
                 />
 
-                <FormButton text="Create Account" />
+                <Button text="Create Account" />
             </form>
             <div className="border-b border-gray-400" />
             <SocialLogin />

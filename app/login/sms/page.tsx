@@ -1,31 +1,44 @@
-import FormButton from "@/components/form-btn";
-import FormInput from "@/components/form-input";
-import SocialLogin from "@/components/social-login";
+"use client"
+
+import Button from "@/components/button";
+import Input from "@/components/input";
+import { useFormState } from "react-dom";
+import { smsLogin } from "./action";
+
+const initialState = {
+    token: false,
+    errors: undefined
+}
 
 export default function SMSLoginPage() {
+    const [state, dispatch] = useFormState(smsLogin, initialState);
     return (
         <div className="flex flex-col gap-10 py-8 px-6">
             <div className="flex flex-col gap-2 *:font-medium">
                 <h1 className="text-2xl">SMS Login</h1>
                 <h2 className="text-xl">Verify your phone number.</h2 >
             </div>
-            <form className="flex flex-col gap-3">
-                <FormInput
-                    type="number"
-                    name="phoneNumber"
+            <form action={dispatch} className="flex flex-col gap-3">
+
+                {state.token ? (
+                    <Input
+                        type="number"
+                        name="token"
+                        placeholder="Verification code"
+                        required
+                        min={100000}
+                        max={999999}
+                    />
+                ) : <Input
+                    type="text"
+                    name="phone"
                     placeholder="Phone number"
                     required
-                    errors={[]}
-                />
-                <FormInput
-                    type="number"
-                    name="code"
-                    placeholder="Verification code"
-                    required
-                    errors={[]}
-                />
+                    errors={state.errors?.formErrors}
+                />}
 
-                <FormButton text="Verify" loading={false} />
+
+                <Button text={state.token ? "Verify Code" : "Send Verification SMS"} />
             </form>
         </div>
     )
